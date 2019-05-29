@@ -1,0 +1,16 @@
+[MASTER]
+ignore=ntplib.py
+
+[MESSAGES CONTROL]
+# C0103: Invalid constant name
+# C1801: Do not use len(SEQUENCE) as condition value
+# W0702: No exception type(s) specified
+# R0801: Similar lines in 2 files.
+# R0902: too-many-instance-attributes
+# R0903: too-few-public-methods
+# R0913: too-many-arguments
+disable=C0103,C1801,W0702,R0801,R0902,R0903, R0913
+
+[FORMAT]
+# Maximum number of characters on a single line.
+max-line-length=120
