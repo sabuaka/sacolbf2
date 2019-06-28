@@ -68,7 +68,7 @@ class DatasetSFD():
         self.occur_price_sell = [dceiling(self.spot_lpt, 0)]
         for row in self.SFD_DECISION_TABLE:
             if row[0] is not None:
-                self.occur_price_buy.append(dfloor(self.spot_lpt * (n2d(-1) + row[0]), 0))
+                self.occur_price_buy.append(dfloor(self.spot_lpt * (n2d(1) - row[0]), 0))
                 self.occur_price_sell.append(dceiling(self.spot_lpt * (n2d(1) + row[0]), 0))
 
     def update_date_spot(self, spot_lpt):
