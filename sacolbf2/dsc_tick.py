@@ -75,10 +75,13 @@ class DatasetTick():
     class RTMC():
         '''real-time moving candlestick'''
         def __init__(self, tick_list: list):
+            # p_: price r_: range c_: candle info
             self.p_open = None
             self.p_high = None
             self.p_low = None
             self.p_close = None
+            self.p_body_high = None
+            self.p_body_low = None
             self.r_hight = None
             self.r_body = None
             self.r_upper_shadow = None
@@ -107,6 +110,8 @@ class DatasetTick():
                 self.r_body = n2d(self.p_close - self.p_open)
                 self.r_upper_shadow = n2d(self.p_high - self.p_close)
                 self.r_lower_shadow = n2d(self.p_open - self.p_low)
+                self.p_body_high = self.p_close
+                self.p_body_low = self.p_open
 
             elif self.p_open > self.p_close:
                 self.c_white = False
@@ -114,6 +119,8 @@ class DatasetTick():
                 self.r_body = n2d(self.p_open - self.p_close)
                 self.r_upper_shadow = n2d(self.p_high - self.p_open)
                 self.r_lower_shadow = n2d(self.p_close - self.p_low)
+                self.p_body_high = self.p_open
+                self.p_body_low = self.p_close
 
             else:
                 self.c_white = False
@@ -121,6 +128,8 @@ class DatasetTick():
                 self.r_body = n2d(self.p_open - self.p_close)
                 self.r_upper_shadow = n2d(self.p_high - self.p_open)
                 self.r_lower_shadow = n2d(self.p_close - self.p_low)
+                self.p_body_high = self.p_open
+                self.p_body_low = self.p_close
 
     def get_rtmc(self, seconds=0, milliseconds=0):
         '''get real-time moving candlestick'''
