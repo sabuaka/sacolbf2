@@ -13,7 +13,7 @@ from sautility.num import n2d
 class DatasetDepth():
     '''class for dataset of depth'''
 
-    def __init__(self, max_len=300):
+    def __init__(self, max_len=350):
 
         self.PRM_MAX_LEN = max_len
 
@@ -142,20 +142,39 @@ class DatasetDepth():
                 return idx
             return 0
 
-        def __init__(self, depth_asks, depth_bids, amount_filter_ask, amount_filter_bid):
+        @staticmethod
+        def __get_amount_in_range(depth, range_from, range_to) -> Decimal:
+            if range_from < range_to:  # ascending order
+                query_depth = depth[np.where((depth[:, 0] >= range_from) & (depth[:, 0] <= range_to))]
+            else:   # descending order
+                query_depth = depth[np.where((depth[:, 0] <= range_from) & (depth[:, 0] >= range_to))]
+
+            return np.sum(query_depth[:, 1], axis=0)
+
+        def __init__(self, mid_price, depth_asks, depth_bids, amount_filter_ask, amount_filter_bid):
             self.amount_filter_ask = amount_filter_ask
             self.amount_filter_bid = amount_filter_bid
 
-            self.idx_ask = self.__get_filter_top_idx(depth_asks, n2d(amount_filter_ask))
-            self.idx_bid = self.__get_filter_top_idx(depth_bids, n2d(amount_filter_bid))
-            self.price_ask = depth_asks[self.idx_ask][0]
-            self.price_bid = depth_bids[self.idx_bid][0]
-            self.spread = self.price_ask - self.price_bid
-            self.spread_rate = (self.price_ask / self.price_bid) - n2d(1.0)
+            # for ask
+            self.ask_idx = self.__get_filter_top_idx(depth_asks, n2d(amount_filter_ask))
+            self.ask_price = depth_asks[self.ask_idx][0]
+            self.aks_amount = self.__get_amount_in_range(depth_asks, depth_asks[0][0], self.ask_price)
+            self.ask_spread = self.ask_price - mid_price
+
+            # for bid
+            self.bid_idx = self.__get_filter_top_idx(depth_bids, n2d(amount_filter_bid))
+            self.bid_price = depth_bids[self.bid_idx][0]
+            self.bid_amount = self.__get_amount_in_range(depth_bids, depth_bids[0][0], self.bid_price)
+            self.bid_spread = mid_price - self.bid_price
+
+            # spread
+            self.spread = self.ask_price - self.bid_price
+            self.percentage = ((self.ask_price / self.bid_price) - n2d(1.0)) * n2d(100.0)
+            self.amount = self.aks_amount + self.bid_spread
 
     def get_spread(self, amount_filter_ask=None, amount_filter_bid=None):
         '''get spread and spread(difference) rate'''
-        return self.SpreadInfo(self.asks, self.bids, amount_filter_ask, amount_filter_bid)
+        return self.SpreadInfo(self.mid_price, self.asks, self.bids, amount_filter_ask, amount_filter_bid)
 
     class StatisticsInfo():
         '''statistics information'''
