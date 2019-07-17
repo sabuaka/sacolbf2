@@ -158,7 +158,7 @@ class DatasetDepth():
             # for ask
             self.ask_idx = self.__get_filter_top_idx(depth_asks, n2d(amount_filter_ask))
             self.ask_price = depth_asks[self.ask_idx][0]
-            self.aks_amount = self.__get_amount_in_range(depth_asks, depth_asks[0][0], self.ask_price)
+            self.ask_amount = self.__get_amount_in_range(depth_asks, depth_asks[0][0], self.ask_price)
             self.ask_spread = self.ask_price - mid_price
 
             # for bid
@@ -170,7 +170,7 @@ class DatasetDepth():
             # spread
             self.spread = self.ask_price - self.bid_price
             self.percentage = ((self.ask_price / self.bid_price) - n2d(1.0)) * n2d(100.0)
-            self.amount = self.aks_amount + self.bid_spread
+            self.amount = self.ask_amount + self.bid_spread
 
     def get_spread(self, amount_filter_ask=None, amount_filter_bid=None):
         '''get spread and spread(difference) rate'''
